@@ -7,9 +7,11 @@ export const breakSlice = createSlice({
   },
   reducers: {
     increment: (state) => {
-      state.time += 1;
+      if (state.time < 60)
+        state.time += 1;
     },
     decrement: (state) => {
+    if (state.time > 1)
       state.time -= 1;
     },
   },
