@@ -3,14 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 export const sessionSlice = createSlice({
   name: 'session',
   initialState: {
-    time: 25,
+    time: 60000 * 25,
   },
   reducers: {
     increment: (state) => {
-      state.time += 1;
+      if (state.time < (60000 * 60))
+        state.time += 60000;
     },
     decrement: (state) => {
-      state.time -= 1;
+    if (state.time > 60000)
+      state.time -= 60000;
     },
   },
 });
