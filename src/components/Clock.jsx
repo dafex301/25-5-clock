@@ -2,14 +2,22 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
 import { 
   decrement as decrementSession, 
-  increment as incrementSession } 
+  increment as incrementSession,
+  reset as resetSession, } 
     from '../slices/sessionSlice';
 import { 
   decrement as decrementBreak, 
-  increment as incrementBreak } 
+  increment as incrementBreak,
+  reset as resetBreak, }
     from '../slices/breakSlice';
 import Setting from './Setting';
 import { start, pause, reset } from '../slices/statusSlice';
+
+// Sound
+import useSound from 'use-sound';
+import music from '../audio/BinksSake.mp3';
+
+// Functions
 import { convertMiliToMinute } from '../functions/convertMiliToMinute';
 
 export default function Clock() {
@@ -24,6 +32,9 @@ export default function Clock() {
   const [isSession, setIsSession] = React.useState(true);
   const [count, setCount] = React.useState(0);
 
+  // Sound
+  const [play, { stop, isPlaying }] = useSound(music);
+
   const handleStart = () => {
     dispatch(start());
   }
@@ -33,8 +44,10 @@ export default function Clock() {
   }
 
   const handleReset = () => {
-    setTimer(sessionTime);
     dispatch(reset());
+    dispatch(resetBreak());
+    dispatch(resetSession());
+    setTimer(sessionTime);
   }
 
   // Update the timer when handleStart fired
@@ -50,6 +63,8 @@ export default function Clock() {
           setTimer(isSession ? sessionTime : breakTime);
           // Also count how many sessions have been done
           setCount(isSession ? count : count + 1);
+          // Play music
+          play();
         }
       }
       , 1000);
@@ -77,7 +92,7 @@ export default function Clock() {
         <h1 className='text-3xl text-white font-semibold text-center'>25 + 5 Clock</h1>
       </div>
       <div className={
-        timer > 60000 
+        timer >= 60000 
       ? 'text-sky-600 bg-white my-3 flex-col text-center p-3 rounded-lg shadow-md ' 
       : 'text-red-600 bg-white my-3 flex-col text-center p-3 rounded-lg shadow-md '}>
         <div className=''>{isSession ? 'Session' : 'Break'}</div>
@@ -122,6 +137,11 @@ export default function Clock() {
         display={convertMiliToMinute(breakTime, 'minute')}
         />
       </div>
+      <button onMouseEnter={() => play()} onMouseLeave={() => stop()}>
+      <span role="img" aria-label="trumpet">
+        🎺
+      </span>
+    </button>
     </div>
   )
 }

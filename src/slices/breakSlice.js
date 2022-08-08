@@ -14,8 +14,11 @@ export const breakSlice = createSlice({
     if (state.time > 60000)
       state.time -= 60000;
     },
+    reset: (state) => {
+      state.time = 300000;
+    }
   },
 });
 
-export const { increment, decrement } = breakSlice.actions;
+export const { increment, decrement, reset } = breakSlice.actions;
 export default breakSlice.reducer;

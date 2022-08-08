@@ -14,8 +14,11 @@ export const sessionSlice = createSlice({
     if (state.time > 60000)
       state.time -= 60000;
     },
+    reset: (state) => {
+      state.time = 60000 * 25;
+    }
   },
 });
 
-export const { increment, decrement } = sessionSlice.actions;
+export const { increment, decrement, reset } = sessionSlice.actions;
 export default sessionSlice.reducer;
