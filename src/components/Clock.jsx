@@ -15,10 +15,12 @@ import { start, pause, reset } from '../slices/statusSlice';
 
 // Sound
 import useSound from 'use-sound';
-import music from '../audio/BinksSake.mp3';
+import { getRandomAudio } from '../functions/audio';
 
 // Functions
 import { convertMiliToMinute } from '../functions/convertMiliToMinute';
+
+let music = getRandomAudio();
 
 export default function Clock() {
   // Redux Store
@@ -47,6 +49,7 @@ export default function Clock() {
     dispatch(reset());
     dispatch(resetBreak());
     dispatch(resetSession());
+    setIsSession(true);
     setTimer(sessionTime);
   }
 
@@ -55,23 +58,27 @@ export default function Clock() {
     if (status === 'START' && timer > 0) {
       const interval = setInterval(() => {
         setTimer(timer - 1000);
+        // Play music
+        if (timer === 2000) {
+          music = getRandomAudio();
+          console.log('use-effect : ' + music);
+          play();
+        }
         // When the timer is 0, change the timer to break/session time
         if (timer === 1000) {
-          setIsSession(!isSession);
+          setIsSession(!isSession)
           // If the timer is session time, reset the timer to break time
           // And vice versa
-          setTimer(isSession ? sessionTime : breakTime);
+          setTimer(isSession ? breakTime : sessionTime);
           // Also count how many sessions have been done
           setCount(isSession ? count : count + 1);
-          // Play music
-          play();
         }
       }
       , 1000);
       return () => clearInterval(interval);
     }
   }
-  , [breakTime, count, isSession, sessionTime, status, timer]);
+  , [breakTime, count, isSession, play, sessionTime, status, timer]);
 
   // Update the timer when sessionTime is changed
   useEffect(() => {
@@ -117,7 +124,7 @@ export default function Clock() {
         <button onClick={handleReset}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-repeat w-8 text-white" viewBox="0 0 16 16">
           <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-          <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+          <path fillRule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
         </svg>
         </button>
         {/* End of Reset */}
@@ -137,11 +144,6 @@ export default function Clock() {
         display={convertMiliToMinute(breakTime, 'minute')}
         />
       </div>
-      <button onMouseEnter={() => play()} onMouseLeave={() => stop()}>
-      <span role="img" aria-label="trumpet">
-        🎺
-      </span>
-    </button>
     </div>
   )
 }
