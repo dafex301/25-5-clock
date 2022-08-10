@@ -1,5 +1,5 @@
 # 25-5 Clock
-This project created using React + Redux
+## Created using React + Redux
 This project is for freeCodeCamp Front End Development Project
 
 Deployed in Vercel
