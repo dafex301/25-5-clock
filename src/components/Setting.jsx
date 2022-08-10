@@ -1,5 +1,5 @@
 import React from 'react'
-import { change } from '../slices/statusSlice';
+import { change_break, change_session } from '../slices/statusSlice';
 import { useDispatch, useSelector } from 'react-redux/es/exports';
 
 
@@ -10,14 +10,20 @@ export default function Setting(props) {
   const handleIncrement = () => {
     if (status !== 'START') {
       dispatch(props.incrementHandler());
-      dispatch(change());
+      if (props.type === 'Session')
+        dispatch(change_session());
+      else
+        dispatch(change_break())
     }
   }
   
   const handleDecrement = () => {
     if (status !== 'START') {
       dispatch(props.decrementHandler());
-      dispatch(change());
+      if (props.type === 'Session')
+        dispatch(change_session());
+      else
+        dispatch(change_break())
     }
   }
 

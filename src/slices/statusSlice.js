@@ -15,11 +15,14 @@ export const statusSlice = createSlice({
     reset: (state) => {
       state.status = 'DEFAULT';
     },
-    change: (state) => {
-      state.status = 'CHANGE';
+    change_session: (state) => {
+      state.status = 'CHANGE_SESSION';
+    },
+    change_break: (state) => {
+      state.status = 'CHANGE_BREAK';
     }
   },
 });
 
-export const { start, pause, reset, change } = statusSlice.actions;
+export const { start, pause, reset, change_session, change_break } = statusSlice.actions;
 export default statusSlice.reducer;
